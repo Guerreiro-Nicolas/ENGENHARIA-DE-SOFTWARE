@@ -110,59 +110,34 @@ Validação de CEP ativa.
 
 Fluxo Principal
 1 - Cliente abre a página do produto ou carrinho e escolhe “Calcular frete”.
-Sistema solicita que o cliente insira o CEP de entrega e, opcionalmente, número do endereço e complemento.
-Cliente informa o CEP e confirma.
-Sistema valida formato do CEP e consulta validação básica (CEP existente/região atendida).
-Sistema compila os itens para cálculo (peso total, volume, dimensões, dimensões por item; se houver produtos com envio especial, marca-los).
-Sistema consulta as regras internas (frete grátis por valor mínimo, remessa por transportadora exclusiva, restrições de matriz/filial) e aplica descontos ou bloqueios conforme necessário.
-Sistema envia requisições às APIs de transportadora ou consulta tabela tarifária para obter opções de serviço (ex.: PAC, Sedex, transportadora expressa, frete agenda, frete próprio).
-Recebidas as respostas, sistema calcula e normaliza valores e prazos, aplicando margens, seguros e impostos conforme regra.
-Sistema apresenta ao cliente uma lista ordenada de opções de frete, cada uma com: modalidade, prazo estimado de entrega, custo, observações (ex.: entrega agendada, necessidade de assinatura, possíveis restrições) e tempo estimado de despacho.
-Cliente seleciona a opção desejada e confirma.
-Sistema armazena a escolha de frete no pedido (ou pré-cálculo salvo no carrinho) e atualiza o valor total para pagamento.
-Sistema exibe resumo final (produto(s) + frete + prazo) e instruções para prosseguir ao checkout.
+2 - Sistema solicita que o cliente insira o CEP de entrega e, opcionalmente, número do endereço e complemento.
+3 - Cliente informa o CEP e confirma.
+4 - Sistema valida formato do CEP e consulta validação básica (CEP existente/região atendida).
+5 - Sistema compila os itens para cálculo (peso total, volume, dimensões, dimensões por item; se houver produtos com envio especial, marca-los).
+6 - Sistema consulta as regras internas (frete grátis por valor mínimo, remessa por transportadora exclusiva, restrições de matriz/filial) e aplica descontos ou bloqueios conforme necessário.
+7 - Sistema envia requisições às APIs de transportadora ou consulta tabela tarifária para obter opções de serviço (ex.: PAC, Sedex, transportadora expressa, frete agenda, frete próprio).
+8 - Recebidas as respostas, sistema calcula e normaliza valores e prazos, aplicando margens, seguros e impostos conforme regra.
+9 - Sistema apresenta ao cliente uma lista ordenada de opções de frete, cada uma com: modalidade, prazo estimado de entrega, custo, observações (ex.: entrega agendada, necessidade de assinatura, possíveis restrições) e tempo estimado de despacho.
+10 - Cliente seleciona a opção desejada e confirma.
+11 - Sistema armazena a escolha de frete no pedido (ou pré-cálculo salvo no carrinho) e atualiza o valor total para pagamento.
+12 - Sistema exibe resumo final (produto(s) + frete + prazo) e instruções para prosseguir ao checkout.
 
 Fluxos Alternativos
-A. CEP inválido ou não encontrado
-
-A1. Sistema informa “CEP inválido” ou “CEP não encontrado” e solicita correção.
-
-A2. Cliente corrige CEP; volta ao passo 4 do fluxo principal.
-
-B. Produto com envio especial (montagem, transporte exclusivo ou dimensões fora do padrão)
-
-B1. Sistema identifica necessidade de cotação manual ou contato da logística.
-
-B2. Exibe mensagem “Cotação necessária — entraremos em contato” e oferece opção de solicitar contato imediato ou agendar avaliação.
-
-B3. Seleção salva como pendente até cotação manual ser adicionada.
-
-C. Aplicação de frete grátis ou promoção
-
-C1. Sistema detecta elegibilidade (ex.: valor mínimo alcançado, cupom válido).
-
-C2. Mostra opção “Frete grátis” destacada com prazo estimado e aplica desconto automaticamente no total.
-
-D. Cliente quer cálculo por endereço alternativo (presente, entrega em empresa)
-
-D1. Cliente escolhe “Usar outro CEP/endereço”; sistema solicita novo CEP e repete cálculo.
-
-E. Cálculo para múltiplos endereços (split shipping)
-
-E1. Cliente solicita entrega para mais de um CEP; sistema divide itens por destino, calcula frete por destino e soma; exibe cada frete separadamente e o total agregado.
+2.1 - CEP inválido ou não encontrado
+2.2 - Sistema informa “CEP inválido” ou “CEP não encontrado” e solicita correção.
+2.3 - Cliente corrige CEP; volta ao passo 4 do fluxo principal.
+6.1 - Aplicação de frete grátis ou promoção
+6.2 - Sistema detecta elegibilidade (ex.: valor mínimo alcançado, cupom válido).
+6.3 - Mostra opção “Frete grátis” destacada com prazo estimado e aplica desconto automaticamente no total.
+8.1 - Cliente quer cálculo por endereço alternativo (presente, entrega em empresa)
+8.2 - Cliente escolhe “Usar outro CEP/endereço”; sistema solicita novo CEP e repete cálculo.
 
 Fluxos de Exceção
-Ex1. Falha na comunicação com API da transportadora — sistema exibe mensagem “Não foi possível obter cotações no momento” e oferece: tentar novamente, usar tabela interna, ou solicitar cotação manual.
-
-Ex2. Limite de dimensões/peso excedido — sistema informa “Produto excede limite de transporte padrão” e redireciona para cotação manual ou transportadora especializada.
-
-Ex3. Região não atendida — mostra “Entrega não disponível para este CEP” e sugere retirada em loja ou contato com atendimento.
+7.1 - Falha na comunicação com API da transportadora — sistema exibe mensagem “Não foi possível obter cotações no momento” e oferece: tentar novamente, usar tabela interna, ou solicitar cotação manual.
+5.1 - Limite de dimensões/peso excedido — sistema informa “Produto excede limite de transporte padrão” e redireciona para cotação manual ou transportadora especializada.
+4.1 - Região não atendida — mostra “Entrega não disponível para este CEP” e sugere retirada em loja ou contato com atendimento.
 
 Pós-condição
-O pedido (ou carrinho) contém a opção de frete selecionada com valor e prazo registrados.
-
-Se aplicável, o sistema gera evento para logística/agendamento de cotação manual.
-
-Regras promocionais aplicadas ficam registradas e contabilizadas no total do pedido.
-
-
+12.1 - O pedido (ou carrinho) contém a opção de frete selecionada com valor e prazo registrados.
+12.1.1 - Se aplicável, o sistema gera evento para logística/agendamento de cotação manual.
+12.1.2 - Regras promocionais aplicadas ficam registradas e contabilizadas no total do pedido.
